@@ -1,4 +1,6 @@
-const API_BASE_URL = 'http://localhost:3000/api/auth';
+// URL relativa: funciona em localhost e no IP/porta usados para abrir o front-end.
+// O Nginx encaminha as chamadas /api para o serviço backend pela rede Docker.
+const API_BASE_URL = '/api/auth';
 
 async function sendForm(form, endpoint) {
   const submitButton = form.querySelector('button[type="submit"]');
