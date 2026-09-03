@@ -2,6 +2,8 @@ const express = require('express');
 const { validateRegistration, validateLogin } = require('../modules/validation');
 const { hashPassword, comparePassword } = require('../modules/crypto');
 const { addUser, findUserByEmail } = require('../modules/persistence');
+const { readDatabase } = require('../modules/persistence');
+const { ADMIN_EMAIL, createToken, requireAuthentication, requireAdmin } = require('../modules/auth');
 
 const router = express.Router();
 
@@ -47,8 +49,25 @@ router.post('/login', async (req, res, next) => {
 
     return res.json({
       message: `Login realizado com sucesso! Bem-vindo(a), ${user.name}.`,
+      token: createToken(user),
+      isAdmin: user.email === ADMIN_EMAIL,
       user: { id: user.id, name: user.name, email: user.email }
     });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+router.get('/users', requireAuthentication, requireAdmin, async (_req, res, next) => {
+  try {
+    const database = await readDatabase();
+    const users = database.users.map(({ id, name, email, createdAt }) => ({
+      id,
+      name,
+      email,
+      createdAt
+    }));
+    return res.json({ users });
   } catch (error) {
     return next(error);
   }

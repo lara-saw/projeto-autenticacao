@@ -12,6 +12,8 @@ services:
   backend:
     image: node:18-alpine
     working_dir: /app
+    environment:
+      AUTH_SECRET: ${AUTH_SECRET:-desenvolvimento-local}
     command: sh -c "npm install && node server.js"
     ports:
       - "3000:3000"

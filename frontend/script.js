@@ -32,6 +32,10 @@ async function sendForm(form, endpoint) {
     form.reset();
     if (endpoint === 'register') {
       window.location.href = 'login.html';
+    } else if (endpoint === 'login') {
+      localStorage.setItem('authToken', result.token);
+      localStorage.setItem('authUser', JSON.stringify(result.user));
+      window.location.href = result.isAdmin ? 'admin.html' : 'welcome.html';
     }
   } catch (error) {
     Swal.fire({
